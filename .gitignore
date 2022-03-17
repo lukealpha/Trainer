@@ -4,3 +4,5 @@
 DebugFiles
 IOFiles
 *.exe
+.DS_Store
+查漏补缺/.DS_Store
