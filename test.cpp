@@ -3,16 +3,17 @@
 #include <algorithm>
 #define ll long long
 using namespace std;
-int main(){
-    ll ans = 0;
-    for (int i = 4713; i >= 1; i --){
-        if(i % 4 == 1){
-            ans += 366;
-        }
-        else{
-            ans += 365;
-        }
+struct Egde{
+    int to;
+    double value;
+    bool operator < (const Egde &a){
+        return value < a.value;
     }
-    cout << ans;
+};
+int main(){
+    Egde a,b;
+    a.value = 0.00;
+    b.value = 3.00;
+    printf("%d",(a<b));
     return 0;
 }
