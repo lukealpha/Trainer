@@ -39,7 +39,7 @@ int main(){
         a[++cnt] = q[i].y;
     }
     sort(a + 1, a + cnt + 1);
-    cnt = unique(a + 1, a + 1 + cnt) -a -1;
+    cnt = unique(a + 1, a + 1 + cnt) - a - 1;
     for (int i = 1; i <= k; i ++){
         q[i].x = lower_bound(a + 1, a + 1 + cnt, q[i].x) - a;
         q[i].y = lower_bound(a + 1, a + 1 + cnt, q[i].y) - a;
