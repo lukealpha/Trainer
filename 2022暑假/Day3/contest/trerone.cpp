@@ -42,6 +42,8 @@ void flip(int x){
     return ;
 }
 int main(){
+    freopen("trerone.in","r",stdin);
+    freopen("trerone.out","w",stdout);
     int n,m;
     scanf("%d%d",&n,&m);
     for (int i = 1; i <= n; i ++) scanf("%1d",&stat[i]);
@@ -62,5 +64,7 @@ int main(){
             else printf("%d\n", Nd[x].pos);
         }
     }
+    fclose(stdin);
+    fclose(stdout);
     return 0;
 }

@@ -18,12 +18,16 @@ int query(int x){
     }
 }
 int main(){
+    freopen("guess.in","r",stdin);
+    freopen("guess.out","w",stdout);
     int q;
     scanf("%d",&q);
     while(q--){
         int x;
         scanf("%d",&x);
-        printf("%d",query(x));
+        printf("%d\n",query(x));
     }
+    fclose(stdin);
+    fclose(stdout);
     return 0;
 }

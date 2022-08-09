@@ -5,19 +5,16 @@
 #define ll long long
 using namespace std;
 const int maxn = 5050;
-
 ll a[maxn];bool vis[maxn];
 struct pa{
     int x = 0, y = 0;
     ll diff = 0;
 }pas[25000010];
 int n,cnt = 0;
-
-bool cmp(pa a, pa b){
-    return a.diff > b.diff;
-}
-
+bool cmp(pa a, pa b){ return a.diff > b.diff; }
 int main(){
+    freopen("split.in","r",stdin);
+    freopen("split.out","w",stdout);
     int n;
     scanf("%d",&n);
     for (int i = 1; i <= n; i ++){
@@ -43,5 +40,7 @@ int main(){
         vis[pas[i].y] = 1;
     }
     printf("%lld",ans);
+    fclose(stdin);
+    fclose(stdout);
     return 0;
 }
