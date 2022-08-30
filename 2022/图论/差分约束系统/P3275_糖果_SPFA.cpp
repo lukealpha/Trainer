@@ -6,11 +6,11 @@
 #define inf 0x7fffffff
 #define ll long long
 using namespace std;
-const int maxn = 100010, maxm = 200010;
+const int maxn = 100010, maxm = 400010;
 int n,m;
 int fst[maxn],to[maxm],nxt[maxm],tot,vis[maxn],cnt[maxn];
-ll val[maxm],dis[maxn];
-void add_edge(int x, int y, ll v){
+int val[maxm],dis[maxn];
+void add_edge(int x, int y, int v){
     to[++tot] = y;
     val[tot] = v;
     nxt[tot] = fst[x];
@@ -45,6 +45,7 @@ bool SPFA(int s){
     return true;
 }
 int main(){
+    freopen("P3275_2.in","r",stdin);
     memset(fst,-1,sizeof fst);
     scanf("%d%d",&n,&m);
     for (int i = 1; i <= m; i ++){
@@ -71,12 +72,12 @@ int main(){
         add_edge(n+1,i,0);
     }
     if(SPFA(n+1)){
-        ll ans = 0;
+        int ans = 0;
         for (int i = 1; i <= n; i++){
             ans += dis[i];
         }
-        printf("%lld",ans);
+        printf("%d",ans + n);
     }
-    else printf("No");
+    else printf("-1");
     return 0;
 }

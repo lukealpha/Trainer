@@ -1,11 +1,4 @@
-/* 
-Tarjan强连通分量算法和Tarjan割边割点算法有一定的不同，不要混淆。
-Tarjan栈中的都是还未确定缩成点的元素，一旦缩成点出栈，就不可能再对其它节点的low值有贡献
-这就是为什么Tarjan强连通分量算法需要动态维护栈，dfn不能代替stack状态
-换句话说，没有stack维护，那么简单通过dfn判断返祖，可能返回的不是自己的祖先
 
-至于求割边割点算法，由于是无向图，所以只要能返回祖先即可更新
-*/
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
@@ -15,16 +8,19 @@ Tarjan栈中的都是还未确定缩成点的元素，一旦缩成点出栈，�
 #include <vector>
 #define ll long long
 using namespace std;
-const int maxn = 20010, maxm = 200020;
+const int maxn = 200010, maxm = 400010;
 int n,m,fst[maxn],to[maxm],nxt[maxm],tot=1;
-int dfn[maxn],low[maxn],s[maxn],col[maxn],cnt,scc,top;
-int deg[maxn],ind[maxn],idx;
-ll dp[maxn],a[maxn];
+int dfn[maxn],low[maxn],s[maxn],col[maxn],sz[maxn],cnt,scc,top;
+int deg[maxn],ind[maxn],idx,op_cnt;
+ll val[maxn],dp[maxn];
 bool instack[maxn];
-map<pair<int,int>,bool> E;
-void add_edge(int x, int y){
+struct op{
+    int a,b,c;
+}opts[maxm];
+void add_edge(int x, int y,ll v){
     to[++tot] = y;
     nxt[tot] = fst[x];
+    val[tot] = v;
     fst[x] = tot;
     return ;
 }
@@ -48,12 +44,12 @@ void Tarjan(int x){
             int z = s[top --];
             instack[z] = false;
             col[z] = scc;
-            a[col[z]] += a[z];
+            sz[col[z]] ++;
         }
         top --;
         col[x] = scc;
-        a[col[x]] += a[x];
         instack[x] = false;
+        sz[col[x]] ++;
     }
 }
 void topo(){
@@ -78,15 +74,28 @@ void topo(){
     return ;
 }
 int main(){
+    //freopen("candy6.in","r",stdin);
     memset(fst,-1,sizeof fst);
     scanf("%d%d",&n,&m);scc = n;
-    for (int i = 1; i <= n; i++){
-        scanf("%lld",&a[i]);
-    }
     for (int i = 1; i <= m; i ++){
-        int u,v;
-        scanf("%d%d",&u,&v);
-        add_edge(u,v);
+        int opt,a,b;
+        scanf("%d%d%d",&opt,&a,&b);
+        if(opt == 1){
+            add_edge(a,b,0);
+            add_edge(b,a,0);
+        }
+        if(opt == 2){
+            opts[++op_cnt] = op{a,b,1};
+        }
+        if(opt == 3){
+            add_edge(b,a,0);
+        }
+        if(opt == 4){
+            opts[++op_cnt] = op{b,a,1};
+        }
+        if(opt == 5){
+            add_edge(a,b,0);
+        }
     }
     for (int i = 1; i <= n; i ++){
         if(!dfn[i]){
@@ -96,21 +105,47 @@ int main(){
     for (int i = 1;i <= n; i ++){
         for (int j = fst[i]; j != -1; j = nxt[j]){
             int v = to[j];
-            if(col[i] != col[v] && E[make_pair(col[i],col[v])] != true){
-                E[make_pair(col[i],col[v])] = true;
-                add_edge(col[i], col[v]);deg[col[v]] ++;
+            if(col[i] != col[v]){
+                add_edge(col[i], col[v],val[j]);deg[col[v]] ++;
             }
         }
     }
-    topo();
-    ll ans = 0;
-    for (int i = 1; i <= idx; i ++){
-        dp[ind[i]] += a[ind[i]];
-        ans = max(ans,dp[ind[i]]);
-        for (int j = fst[ind[i]]; j != -1; j = nxt[j]){
-            dp[to[j]] = max(dp[to[j]],dp[ind[i]]);
+    for (int i = 1; i <= op_cnt; i ++){
+        if(col[opts[i].a] == col[opts[i].b]){
+            printf("-1");
+            return 0;
+        }
+        else{
+            add_edge(col[opts[i].a],col[opts[i].b],opts[i].c);
+            deg[col[opts[i].b]] ++;
         }
     }
-    printf("%lld",ans);
+    ++scc;
+    for (int i = n + 1; i < scc; i ++){
+        add_edge(scc,i,0);deg[i] ++;
+    }
+    topo();
+    /*
+    for (int i = n + 1; i <= scc; i ++){
+        for (int j = fst[i]; j != -1; j = nxt[j]){
+            printf("%d -> %d = %lld\n",i,to[j],val[j]);
+        }
+    }
+    */
+    for (int i = 1; i <= idx; i ++){
+        for (int j = fst[ind[i]]; j != -1; j = nxt[j]){
+            int v = to[j];
+            dp[v] = max(dp[v],dp[ind[i]] + val[j]);
+        }
+    }
+    if(idx == scc - n){
+        ll ans = 0;
+        for (int i = 1; i <= idx; i ++){
+            ans += dp[ind[i]] * sz[ind[i]];
+        }
+        printf("%lld",ans + n);
+    }
+    else printf("-1");
+    
     return 0;
 }
